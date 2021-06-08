@@ -18,8 +18,7 @@ pub fn import(filename: &str) -> Result<Vec<Item>, Error> {
                 word: params[0].to_string(),
                 translation: params[1].to_string(),
                 context: params[2].to_string(),
-                frequency: params[3].parse::<i8>().unwrap(),
-                learned: params[4].parse::<i8>().unwrap(),
+                frequency: params[3].parse::<i8>().unwrap()
             });
         }
     });
@@ -30,12 +29,11 @@ pub fn export(filename: &str, collection: &Vec<Item>) -> Result<(), Error> {
     let mut string = String::new();
 
     collection.iter().for_each(|item| {
-        let res = format!("{}{}{}{}{}{}{}{}{}\n",
+        let res = format!("{}{}{}{}{}{}{}{}\n",
                           item.word, SEPARATOR,
                           item.translation, SEPARATOR,
                           item.context, SEPARATOR,
-                          item.frequency, SEPARATOR,
-                          item.learned);
+                          item.frequency, SEPARATOR);
         string.write_str(&res).unwrap();
     });
     fs::write(filename, string)?;

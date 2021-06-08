@@ -33,10 +33,8 @@ fn main() {
         add(&mut data);
     } else if config.action == "get" {
         data.shuffle(&mut thread_rng());
-        let mut unlearned: Vec<Item> = data.clone().into_iter().filter(|x| x.learned < 2).collect();
-        unlearned.sort_by(|a, b| b.frequency.cmp(&a.frequency));
-        let mut unlearned = unlearned.iter_mut();
-        get(&mut unlearned, &mut data)
+        data.sort_by(|a, b| b.frequency.cmp(&a.frequency));
+        get(&mut data.clone().iter_mut(), &mut data)
     }
 }
 
@@ -54,11 +52,18 @@ fn update_item(item: &mut Item, list: &mut Vec<Item>) {
         context: item.context.to_string(),
         translation: item.translation.to_string(),
         frequency: item.frequency,
-        learned: item.learned,
     });
 
     driver::export(&get_filename(), &data).unwrap();
     println!("The word {} updated", item.word);
+}
+
+fn remove_item(item: &mut Item, data: &mut Vec<Item>) {
+    let index = data.iter().position(|x| x.word == item.word);
+    data.remove(index.unwrap());
+
+    driver::export(&get_filename(), &data).unwrap();
+    println!("The word {} deleted", item.word);
 }
 
 fn read_line() -> String {
@@ -81,6 +86,10 @@ fn get<'a, T: Iterator<Item=&'a mut Item>>(data: &mut T, list: &mut Vec<Item>) {
                 if line == "y" {
                     print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
                     update_item(item, list);
+                    get(data, list)
+                } else if line == "del" {
+                    print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
+                    remove_item(item, list);
                     get(data, list)
                 }
                 print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
