@@ -35,6 +35,20 @@ fn main() {
         data.shuffle(&mut thread_rng());
         data.sort_by(|a, b| b.frequency.cmp(&a.frequency));
         get(&mut data.clone().iter_mut(), &mut data)
+    } else if config.action == "find" {
+        find(&data)
+    }
+}
+
+fn find(data: &Vec<Item>) {
+    let line = read_line();
+    match data.iter().filter(|item| item.word == line.to_lowercase()).next() {
+        Some(item) => {
+            println!("The word '{}' exists", item.word);
+        }
+        None => {
+            println!("The word '{}' does not exist", line);
+        },
     }
 }
 
@@ -115,7 +129,7 @@ fn add(data: &mut Vec<Item>) {
         process::exit(1);
     }
     let word = parts[0].to_lowercase();
-    let item = Item::new(&word, parts[1], parts[2]);
+    let item = Item::new(&word, &parts[1].to_lowercase(), parts[2]);
 
     data.iter().for_each(|item| {
         if item.word == word {
