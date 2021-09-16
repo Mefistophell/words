@@ -31,6 +31,14 @@ impl Item {
     }
 }
 
+// impl Deref for Item {
+//     type Target = String;
+//
+//     fn deref(&self) -> &Self::Target {
+//         &self.word
+//     }
+// }
+
 #[cfg(test)]
 mod tests {
     use super::*;
