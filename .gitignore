@@ -1,5 +1,4 @@
 /target
-*.csv
 words
 .DS_Store
 .idea
